@@ -1,0 +1,32 @@
+# ── 编译产物（491 MB，必须排除）
+build/
+
+# ── 安装包与增量包（149 MB，发布渠道，不入库）
+dist/
+
+# ── 外部工具链（2.5 GB）
+tools/mingw-dl/
+tools/zig-windows-x86_64-0.13.0/
+tools/*.zip
+
+# ── Python 环境 & pip 缓存
+venv/
+.env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# ── IDE / OS 临时文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── 测试日志与中间数据
+*.log
+build/t4/
+build/vidframes/
