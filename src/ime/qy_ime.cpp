@@ -351,9 +351,12 @@ static void ApplyStatusSkin(qy::StatusBar& sb, const qy::Options& o) {
 void CTextService::_UpdateStatus() {
     StatusInfo si;
     si.chinese = _chinese;
-    // 临时拼音只把状态条上的「五」临时显示成「拼」，绝不改用户方案：
-    // 方案保存、右键菜单勾选、config.ini 全部仍读 _engine.mode()（还是五笔）。
-    si.mode = _engine.tempPinyin() ? Mode::Pinyin : _engine.mode();
+    // 状态条方案图标始终显示用户真实方案，临时拼音（z 引导）不改图标：
+    // 临时拼音只在引擎内部一次性把候选按拼音查，输入结束在 Clear() 里复位，
+    // 那条路径不经过这里。若图标跟着临时拼音切成「拼」，结束时就没人把它
+    // 刷回「五」，会永久停在「拼」。所以这里一律读 _engine.mode()，
+    // 方案保存、右键菜单勾选、config.ini 也都读真实 mode()。
+    si.mode = _engine.mode();
     si.fullWidth = _opt.fullWidth != 0;
     si.symbols = _sym.visible();
     _status.Update(si);
@@ -413,7 +416,8 @@ void CTextService::_SetMode(Mode m) {
 }
 
 void CTextService::_ToggleMode() {
-    // 临时拼音时状态条显示的是「拼」，点它=退回五笔，而不是把用户方案轮换成拼音
+    // 临时拼音期间点方案区=退出临时拼音、退回五笔，而不是把用户方案轮换成拼音
+    // （图标此时仍显示真实方案「五」，但底层正处于一次性拼音态，要先清掉）
     if (_engine.tempPinyin()) {
         _engine.CancelTempPinyin();
         _HideCandidate();

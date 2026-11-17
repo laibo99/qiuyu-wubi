@@ -322,8 +322,9 @@ int main() {
           Has(ime, "_engine.tempPinyin() && !_engine.hasComp()") &&
               Has(ime, "_engine.CancelTempPinyin()") &&
               Has(ime, "QyTrace(L\"temp pinyin: cancel\")"));
-    Check("临时拼音：状态条只临时显示「拼」，方案保存仍读真实 mode()",
-          Has(ime, "_engine.tempPinyin() ? Mode::Pinyin : _engine.mode()") &&
+    Check("临时拼音：状态条图标始终读真实 mode()，临时拼音期间不改成「拼」",
+          Has(ime, "si.mode = _engine.mode();") &&
+              !Has(ime, "_engine.tempPinyin() ? Mode::Pinyin : _engine.mode()") &&
               Has(ime, "cfg.opt().mode = ModeToInt(_engine.mode());"));
     Check("临时拼音：点状态条「拼」是退回五笔，不是把方案轮换掉",
           Has(ime, "void CTextService::_ToggleMode()") &&
